@@ -1,0 +1,38 @@
+---
+title: "GISMap"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+Downloading and calling necessary packages:
+
+```{r}
+1 + 1
+```
+
+Plotting map of SA coastline:
+
+```{library(maps)}
+
+map("world", regions="South Africa", fill=TRUE, col="gray")
+
+ggplot() +
+  geom_sf(data = sa, fill = "gray", color = "black") +
+  coord_sf(
+    xlim = c(16, 33),   # longitude range
+    ylim = c(-36, -27), # latitude range
+    expand = FALSE
+  ) +
+  theme_minimal() +
+  labs(title = "South African Coastline")
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
