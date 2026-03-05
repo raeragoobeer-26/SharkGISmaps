@@ -20,19 +20,10 @@ Downloading and calling necessary packages:
 
 Plotting map of SA coastline:
 
-```{library(maps)}
+\`\`\`{library(maps)}
 
 map("world", regions="South Africa", fill=TRUE, col="gray")
 
-ggplot() +
-  geom_sf(data = sa, fill = "gray", color = "black") +
-  coord_sf(
-    xlim = c(16, 33),   # longitude range
-    ylim = c(-36, -27), # latitude range
-    expand = FALSE
-  ) +
-  theme_minimal() +
-  labs(title = "South African Coastline")
-```
+ggplot() + geom_sf(data = sa, fill = "gray", color = "black") + coord_sf( xlim = c(16, 33), \# longitude range ylim = c(-36, -27), \# latitude range expand = FALSE ) + theme_minimal() + labs(title = "South African Coastline") \`\`\`
 
 The `echo: false` option disables the printing of code (only output is displayed).
