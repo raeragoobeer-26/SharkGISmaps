@@ -1,4 +1,109 @@
 <!DOCTYPE html>
+
+Background:
+
+This document explains the process and steps taken to produce the GIS map
+
+Shark distribution data was obtained from GBIF - data were collected for South African shores only and for the following species: Acroteriobatus annulatus (Lesser guitarfish/ sandshark), Carcharodon carcharias (white shark), Haploblepharus pictus (dark shyshark) and Torpedo sinuspersici (Gulf torpedo/ variable electric ray).
+
+Note: AI (ChatGPT) was used to aid with code in some parts.
+
+Code:
+
+Downloading and calling necessary packages:
+
+{r}
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
+install.packages("rgbif")
+install.packages("sf")
+install.packages("terra")
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("ggspatial")
+install.packages("leaflet")
+install.packages("maps")
+install.packages("rnaturalearth")
+install.packages("rnaturalearthdata")
+install.packages("rnaturalearthhires")
+
+
+library(rgbif)
+library(maps)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(rnaturalearth)
+
+Plot base map:
+
+{r}
+sa <- ne_countries(country = "South Africa", returnclass = "sf")
+
+ggplot() +
+  geom_sf(data = sa, fill = "gray", color = "black") +
+  coord_sf(
+    xlim = c(16, 33),   # longitude range
+    ylim = c(-36, -27), # latitude range
+    expand = FALSE
+  ) +
+  theme_minimal() +
+  labs(title = "South African Coastline")
+
+Load shark species data from GBIF and check structure
+
+{r}
+species <- c(
+  "Carcharodon carcharias",
+  "Haploblepharus pictus",
+  "Acroteriobatus annulatus",
+  "Torpedo sinuspersici"
+)
+
+get_species_data <- function(sp){
+  
+  key <- name_backbone(name = sp)$speciesKey
+  
+  occ <- occ_search(
+    taxonKey = key,
+    hasCoordinate = TRUE,
+    country = "ZA", 
+    limit = 2000
+  )
+  
+  data <- occ$data %>%
+    select(species, decimalLongitude, decimalLatitude) %>%
+    na.omit()
+  
+  return(data)
+}
+
+shark_data <- bind_rows(lapply(species, get_species_data))
+
+shark_sf <- st_as_sf(
+  shark_data,
+  coords = c("decimalLongitude","decimalLatitude"),
+  crs = 4326
+)
+
+st_crs(shark_sf)
+
+Plot map:
+
+{r}
+ggplot() +
+  geom_sf(data = sa, fill = "gray", color = "black") +   # base map
+  geom_sf(data = shark_sf, aes(color = species), size = 2, alpha = 0.7) +  # points
+  coord_sf(xlim = c(16, 33), ylim = c(-37, -27), expand = FALSE) +  # zoom to coastline
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Shark Occurrences in South Africa",
+    color = "Species"
+  )
+
+
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
