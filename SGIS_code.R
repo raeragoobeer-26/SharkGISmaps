@@ -1,23 +1,3 @@
----
-title: "GISMap"
-format: gfm
-editor: visual
----
-
-## Background: 
-
-This document explains the process and steps taken to produce the GIS map
-
-Shark distribution data was obtained from GBIF - data were collected for South African shores only and for the following species: *Acroteriobatus annulatus* (Lesser guitarfish/ sandshark), *Carcharodon carcharias* (white shark), *Haploblepharus pictus* (dark shyshark) and *Torpedo sinuspersici* (Gulf torpedo/ variable electric ray).
-
-Note: AI (ChatGPT) was used to aid with code in some parts.
-
-## Code: 
-
-Downloading and calling necessary packages:
-
-```{r}
-options(repos = c(CRAN = "https://cloud.r-project.org/"))
 install.packages("rgbif")
 install.packages("sf")
 install.packages("terra")
@@ -31,7 +11,6 @@ install.packages("rnaturalearth")
 install.packages("rnaturalearthdata")
 install.packages("rnaturalearthhires")
 
-
 library(rgbif)
 library(maps)
 library(ggplot2)
@@ -39,12 +18,7 @@ library(dplyr)
 library(tidyverse)
 library(sf)
 library(maps)
-library(rnaturalearth)
-```
 
-Plot base map:
-
-```{r}
 sa <- ne_countries(country = "South Africa", returnclass = "sf")
 
 ggplot() +
@@ -56,11 +30,9 @@ ggplot() +
   ) +
   theme_minimal() +
   labs(title = "South African Coastline")
-```
 
-Load shark species data from GBIF and check structure
+# Plotting multiple species 
 
-```{r}
 species <- c(
   "Carcharodon carcharias",
   "Haploblepharus pictus",
@@ -95,11 +67,15 @@ shark_sf <- st_as_sf(
 )
 
 st_crs(shark_sf)
-```
 
-Plot map:
+geom_sf(data = shark_sf, aes(color = species), size = 2) +
+  scale_color_manual(values = c(
+    "Carcharodon carcharias" = "red",
+    "Haploblepharus pictus" = "blue",
+    "Acroteriobatus annulatus" = "yellow",
+    "Torpedo sinuspersici" = "purple"
+  ))
 
-```{r}
 ggplot() +
   geom_sf(data = sa, fill = "gray", color = "black") +   # base map
   geom_sf(data = shark_sf, aes(color = species), size = 2, alpha = 0.7) +  # points
@@ -109,4 +85,8 @@ ggplot() +
     title = "Shark Occurrences in South Africa",
     color = "Species"
   )
-```
+
+
+
+
+
