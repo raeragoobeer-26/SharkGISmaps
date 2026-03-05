@@ -4,7 +4,7 @@ format: gfm
 editor: visual
 ---
 
-## Background: 
+## Background:
 
 This document explains the process and steps taken to produce the GIS map
 
@@ -12,7 +12,7 @@ Shark distribution data was obtained from GBIF - data were collected for South A
 
 Note: AI (ChatGPT) was used to aid with code in some parts.
 
-## Code: 
+## Code:
 
 Downloading and calling necessary packages:
 
@@ -110,3 +110,5 @@ ggplot() +
     color = "Species"
   )
 ```
+
+![](images/clipboard-579875516.png)
